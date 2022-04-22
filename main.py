@@ -7,7 +7,7 @@ import SpotifyComm
 
 
 def main():
-    print(SpotifyComm.get_playlists())
+    print(SpotifyComm.get_metadata('4tVASOccgcigdCfwUamZCh'))
 
 
 # Press the green button in the gutter to run the script.

@@ -1,8 +1,9 @@
 import spotipy
 from spotipy.oauth2 import SpotifyOAuth
+import creds
 
-client_id='8586a99fc7a64e3d95e699fe47bd7978'
-client_secret='f90cc5d7395647b7a8890afdf2dd40f2'
+client_id=creds.get_client_id()
+client_secret=creds.get_client_secret()
 redirect_url='http://localhost/'
 scope = 'playlist-read-private'
 
@@ -26,19 +27,27 @@ def get_playlists():
     playlists_list = []
     playlists = sp.current_user_playlists()
     for x in playlists['items']:
-        description = [x['name'], get_tracks_in_playlist(x)]
-        playlists_list.append(description)
+        playlists_list.append((x['name'], x['tracks']['total'], x['id']))
     return playlists_list
 
 
-def get_tracks_in_playlist(x):
-    tracks = sp.playlist_items(x['id'])
-    tracksArr = []
-    for y in tracks['items']:
-        tracksArr.append(y['track']['name'])
-        tracksArr.append(y['track']['artists'][0]['name'])
-        tracksArr.append(y['track']['id'])
-    return tracksArr
+def get_tracks_in_playlist(i):
+    tracks = sp.playlist_items(i)
+    tracks_arr = []
+    for x in tracks['items']:
+        tracks_arr.append((x['track']['name'], x['track']['artists'][0]['name'], x['track']['id']))
+    return tracks_arr
 
 
-#def get_metadata():
+def get_metadata(i):
+    track=sp.track(i)
+    metadata = {'song' : track['name'],
+                'artist' : track['artists'][0]['name'],
+                'album_name' : track['album']['name'],
+                'album_artist' : track['album']['artists'][0]['name'],
+                'album_tracks' : track['album']['total_tracks'],
+                'album_disc' : track['disc_number'],
+                'song_track' : track['track_number'],
+                'year' : track['album']['release_date']
+    }
+    return metadata

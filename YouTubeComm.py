@@ -1,6 +1,7 @@
 from googleapiclient.discovery import build
+import creds
 
-youtube_api_key='AIzaSyB-tcNm0KVCe-RcD72lSxKg3P4f4l27DnY'
+youtube_api_key=creds.get_youtube_api_key()
 
 #We have gotten the tracks, make use of youtube api
 youtube=googleapiclient.discovery.build('youtube','v3',developerKey=youtube_api_key)
