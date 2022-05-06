@@ -2,6 +2,7 @@ import googleapiclient
 from googleapiclient.discovery import build
 import creds
 import youtube_dl
+
 def my_hook(d):
     if d['status'] == 'finished':
         print('done')
@@ -20,18 +21,20 @@ with open("C:/Users/Fran/Desktop/Testing.txt", 'w') as f:
 request=youtube.videos().list(part= "contentDetails", id="otyPTI9iMjw")
 response1=request.execute()
 print(response1)
-ydl_opts = {
-    'format' : 'bestaudio/best',
-    'postprocessors' : [{
-        'key' : 'FFmpegExtractAudio',
-        'preferredcodec' : 'm4a',
-        'preferredquality' : '256'
-    }],
-    'progress_hooks' : [my_hook]
+#ydl_opts = {
+#    'format' : 'bestaudio/best',
+#    'outtmpl': 'D:\Music youtube test\%(title)s.%(ext)s',
+#    'ffmpeg_location': 'D:\\ffmpeg\\ffmpeg\\bin',
+#    'postprocessors' : [{
+#        'key' : 'FFmpegExtractAudio',
+#        'preferredcodec' : 'm4a',
+#        'preferredquality' : '256'
+#    }],
+#    'progress_hooks' : [my_hook]
 
-}
-with youtube_dl.YoutubeDL(ydl_opts) as ydl:
-    ydl.download(['https://www.youtube.com/watch?v=otyPTI9iMjw'])
+#}
+#with youtube_dl.YoutubeDL(ydl_opts) as ydl:
+#    ydl.download(['https://www.youtube.com/watch?v=oTwVce9eWb4'])
 #Can make searches. From searches find length closest to song length on spotify. If >30 seconds return in the errors file. put URL into txt
 
 def get_videos(search):
@@ -41,7 +44,20 @@ def get_videos(search):
         if(x['id']['kind'] == 'youtube#video'):
             return x['id']['videoId']
 
-#def download_audio(url):
+def download_audio(url, playlist):
+    ydl_opts = {
+        'format': 'bestaudio/best',
+        'outtmpl': 'D:\Music youtube test\\'+playlist+'\%(title)s.%(ext)s',
+        'ffmpeg_location': 'D:\\ffmpeg\\ffmpeg\\bin',
+        'postprocessors': [{
+            'key': 'FFmpegExtractAudio',
+            'preferredcodec': 'm4a',
+            'preferredquality': '256'
+        }],
+        'progress_hooks': [my_hook]
+    }
+    with youtube_dl.YoutubeDL(ydl_opts) as ydl:
+        ydl.download([url])
 
 
 
