@@ -14,9 +14,9 @@ playlists = sp.current_user_playlists()
 #For Loop Example
 #for x in playlists['items']:
 #    print(x)
-print(playlists['items'][0])
-tracks = sp.playlist_items(playlists['items'][0]['id'])
-print(tracks['items'][0]['track'])
+#print(playlists['items'][0])
+#tracks = sp.playlist_items(playlists['items'][0]['id'])
+#print(tracks['items'][0]['track'])
 #Making txt file
 #with open("C:/Users/Fran/Desktop/Testing.txt", 'w') as f:
 #    for x in tracks['items']:
@@ -40,7 +40,7 @@ def get_tracks_in_playlist(i):
 
 
 def get_metadata(i):
-    track=sp.track(i)
+    track = sp.track(i)
     metadata = {'song' : track['name'],
                 'artist' : track['artists'][0]['name'],
                 'album_name' : track['album']['name'],
@@ -48,6 +48,8 @@ def get_metadata(i):
                 'album_tracks' : track['album']['total_tracks'],
                 'album_disc' : track['disc_number'],
                 'song_track' : track['track_number'],
-                'year' : track['album']['release_date']
+                'year' : track['album']['release_date'],
+                'genre' : track['artist']['genre'],
+                'compilation' : track['album']['album_type']
     }
     return metadata
