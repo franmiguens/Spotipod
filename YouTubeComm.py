@@ -39,7 +39,6 @@ print(response1)
 #with youtube_dl.YoutubeDL(ydl_opts) as ydl:
 #    ydl.download(['https://www.youtube.com/watch?v=oTwVce9eWb4'])
 #Can make searches. From searches find length closest to song length on spotify. If >30 seconds return in the errors file. put URL into txt
-
 def get_videos(search):
     request = youtube.search().list(part='snippet', maxResults=25, q=search)
     response = request.execute()
@@ -47,11 +46,12 @@ def get_videos(search):
         if(x['id']['kind'] == 'youtube#video'):
             return x['id']['videoId']
 
-def download_audio(url, playlist):
-    output = '/Users/franciscomiguens/Desktop/Coding/music/'+playlist+'/%(title)s.%(ext)s'
+def download_audio(url, playlist, song_title):
+    output = '/Users/franciscomiguens/Desktop/Coding/music/'+playlist+'/'+song_title+'.%(ext)s'
     ydl_opts = {
         'format': 'bestaudio/best',
         'outtmpl': output,
+        'cookiefile' : '/Users/franciscomiguens/Desktop/Coding/settings/youtube.com_cookies.txt',
         'ffmpeg_location': '/Users/franciscomiguens/Desktop/Coding/ffmpeg/ffmpeg',
         'postprocessors': [{
             'key': 'FFmpegExtractAudio',
@@ -61,7 +61,10 @@ def download_audio(url, playlist):
         'progress_hooks': [my_hook]
     }
     with youtube_dl.YoutubeDL(ydl_opts) as ydl:
-        ydl.download([url])
-    return output
-
+        try:
+            ydl.cache.remove()
+            ydl.download([url])
+            return False
+        except youtube_dl.DownloadError as error:
+            return True
 
