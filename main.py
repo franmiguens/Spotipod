@@ -4,7 +4,7 @@ import Tagging
 import EditTextFiles
 import SpecificPlaylistSelection
 from os.path import exists
-text_file_path = '/Users/franciscomiguens/Desktop/Coding/text files'
+
 # Press Shift+F10 to execute it or replace it with your code.
 # Press Double Shift to search everywhere for classes, files, tool windows, actions, and settings.
 
@@ -16,6 +16,9 @@ text_file_path = '/Users/franciscomiguens/Desktop/Coding/text files'
 
 
 def main():
+    #(0)M4A output path, (1)cookie file, (2)ffmpeg, (3)text_file_path,
+    settings = EditTextFiles.get_settings('/Users/franciscomiguens/Desktop/Coding/settings/settings.txt')
+    text_file_path = settings[3]
     print('Getting playlist...')
     all_playlists = SpotifyComm.get_playlists()
     all_playlists = SpecificPlaylistSelection.select(all_playlists)
@@ -39,8 +42,9 @@ def main():
             video_id = YouTubeComm.get_videos(y[0]+' '+y[1])
             bad_download = True
             while bad_download:
-                bad_download = YouTubeComm.download_audio('https://www.youtube.com/watch?v='+video_id, x[0], y[0])
-            directory = '/Users/franciscomiguens/Desktop/Coding/music/'+x[0]+'/'+y[0]+'.m4a'
+                bad_download = YouTubeComm.download_audio('https://www.youtube.com/watch?v='+video_id,
+                                                          x[0], y[0], settings[0], settings[1], settings[2])
+            directory = settings[0]+x[0]+'/'+y[0]+'.m4a'
             Tagging.metadata(directory, SpotifyComm.get_metadata(y[2]))
         print('Done')
 

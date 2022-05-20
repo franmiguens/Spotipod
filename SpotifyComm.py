@@ -8,7 +8,7 @@ redirect_url = 'http://localhost/'
 scope = 'playlist-read-private'
 
 sp = spotipy.Spotify(
-    auth_manager=SpotifyOAuth(client_id=client_id, client_secret=client_secret, redirect_uri=redirect_url, scope=scope))
+    auth_manager=SpotifyOAuth(client_id=client_id, client_secret=client_secret, redirect_uri=redirect_url, scope=scope, cache_path='/Users/franciscomiguens/Desktop/Coding/settings/.cache.txt'))
 
 playlists = sp.current_user_playlists()
 

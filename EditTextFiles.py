@@ -17,3 +17,11 @@ def edit_text_files(track_list, playlist_path):
         track_list.remove(x)
     write.close()
     return track_list
+
+def get_settings(path):
+    open_text = open(path, 'r')
+    read = open_text.read()
+    array = read.split('\n')
+    open_text.close()
+    return array
+
