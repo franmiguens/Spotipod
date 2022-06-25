@@ -37,7 +37,11 @@ def get_tracks_in_playlist(i):
     tracks = sp.playlist_items(i)
     tracks_arr = []
     for x in tracks['items']:
-        tracks_arr.append((x['track']['name'], x['track']['artists'][0]['name'], x['track']['id']))
+        print(x)
+        audio_features = sp.audio_features(x['track']['id'])
+        duration = audio_features[0]['duration_ms']
+        duration = duration/1000
+        tracks_arr.append((x['track']['name'], x['track']['artists'][0]['name'], x['track']['id'], duration))
     return tracks_arr
 
 

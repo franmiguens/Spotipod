@@ -2,6 +2,7 @@ import googleapiclient
 from googleapiclient.discovery import build
 import creds
 import youtube_dl
+from requests import get
 
 
 def my_hook(d):
@@ -13,6 +14,10 @@ youtube_api_key = creds.get_youtube_api_key()
 
 # We have gotten the tracks, make use of youtube api
 youtube = googleapiclient.discovery.build('youtube', 'v3', developerKey=youtube_api_key)
+
+
+
+# print(video)
 
 
 # request=youtube.search().list(part='snippet', maxResults=25, q='drugs tai verdes')
@@ -44,12 +49,26 @@ youtube = googleapiclient.discovery.build('youtube', 'v3', developerKey=youtube_
 # with youtube_dl.YoutubeDL(ydl_opts) as ydl:
 #    ydl.download(['https://www.youtube.com/watch?v=oTwVce9eWb4'])
 # Can make searches. From searches find length closest to song length on spotify. If >30 seconds return in the errors file. put URL into txt
-def get_videos(search):
-    request = youtube.search().list(part='snippet', maxResults=25, q=search)
-    response = request.execute()
-    for x in response['items']:
-        if (x['id']['kind'] == 'youtube#video'):
-            return x['id']['videoId']
+def get_videos(search, duration):
+    # request = youtube.search().list(part='snippet', maxResults=25, q=search)
+    # response = request.execute()
+    # for x in response['items']:
+    #    if (x['id']['kind'] == 'youtube#video'):
+    #        return x['id']['videoId']
+    ydl_opts = {
+        'quiet': True,
+        'skip_download': True,
+        'forcetitle': True,
+        'forceurl': True,
+    }
+    with youtube_dl.YoutubeDL(ydl_opts) as ydl:
+        infoSearched = ydl.extract_info("ytsearch10:" + search)
+    for x in infoSearched['entries']:
+        print(str(abs(x['duration']) - duration)+'\n')
+        if abs(x['duration'] - duration) < 10:
+            return x['webpage_url']
+#    print(infoSearched['entries'])
+    return infoSearched['entries'][0]['webpage_url']
 
 
 def download_audio(url, playlist, song_title, uni_output, cookiefile, ffmpeg):
