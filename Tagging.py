@@ -1,6 +1,5 @@
 from mutagen.mp4 import MP4
 
-
 def metadata(directory, dictionary):
     f=MP4(directory)
     f['\xa9nam'] = dictionary['song']
@@ -16,3 +15,24 @@ def metadata(directory, dictionary):
 
     f['\xa9gen'] = dictionary['genre']
     f.save()
+
+
+def safe_string(string):
+    if '<' in string:
+        string = string.replace('<', '#')
+    if '>' in string:
+        string = string.replace('>', '#')
+    if ':' in string:
+        string = string.replace(':', '#')
+    if '"' in string:
+        string = string.replace('"', '#')
+    if '\\' in string:
+        string = string.replace('\\', '#')
+    if '|' in string:
+        string = string.replace('|', '#')
+    if '?' in string:
+        string = string.replace('?', '#')
+    if '*' in string:
+        string = string.replace('*', '#')
+    return string
+

@@ -3,6 +3,7 @@ from googleapiclient.discovery import build
 import creds
 import youtube_dl
 from requests import get
+import yt_dlp
 
 
 def my_hook(d):
@@ -49,7 +50,7 @@ youtube = googleapiclient.discovery.build('youtube', 'v3', developerKey=youtube_
 # with youtube_dl.YoutubeDL(ydl_opts) as ydl:
 #    ydl.download(['https://www.youtube.com/watch?v=oTwVce9eWb4'])
 # Can make searches. From searches find length closest to song length on spotify. If >30 seconds return in the errors file. put URL into txt
-def get_videos(search, duration):
+def get_videos(search, duration,cookiefile):
     # request = youtube.search().list(part='snippet', maxResults=25, q=search)
     # response = request.execute()
     # for x in response['items']:
@@ -57,14 +58,15 @@ def get_videos(search, duration):
     #        return x['id']['videoId']
     ydl_opts = {
         'quiet': True,
+        'cookiefile': cookiefile,
         'skip_download': True,
         'forcetitle': True,
         'forceurl': True,
     }
-    with youtube_dl.YoutubeDL(ydl_opts) as ydl:
+    with yt_dlp.YoutubeDL(ydl_opts) as ydl:
         infoSearched = ydl.extract_info("ytsearch10:" + search)
     for x in infoSearched['entries']:
-        print(str(abs(x['duration']) - duration)+'\n')
+#        print(str(abs(x['duration']) - duration)+'\n')
         if abs(x['duration'] - duration) < 10:
             return x['webpage_url']
 #    print(infoSearched['entries'])
@@ -72,7 +74,8 @@ def get_videos(search, duration):
 
 
 def download_audio(url, playlist, song_title, uni_output, cookiefile, ffmpeg):
-    output = uni_output + playlist + '/' + song_title + '.%(ext)s'
+    output = uni_output + playlist + '\\' + song_title + '.%(ext)s'
+    print(cookiefile)
     ydl_opts = {
         'format': 'bestaudio/best',
         'outtmpl': output,
@@ -85,10 +88,10 @@ def download_audio(url, playlist, song_title, uni_output, cookiefile, ffmpeg):
         }],
         'progress_hooks': [my_hook]
     }
-    with youtube_dl.YoutubeDL(ydl_opts) as ydl:
+    with yt_dlp.YoutubeDL(ydl_opts) as ydl:
         try:
             ydl.cache.remove()
             ydl.download([url])
             return False
-        except youtube_dl.DownloadError as error:
+        except yt_dlp.DownloadError as error:
             return True
